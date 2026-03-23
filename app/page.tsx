@@ -1,3 +1,8 @@
+"use client";
+
+import { FormEvent, useState } from "react";
+import { supabase } from "@/lib/supabase";
+
 export default function Home() {
   return (
     <main className="min-h-screen bg-white text-gray-900">
@@ -5,7 +10,7 @@ export default function Home() {
       <Services />
       <WhyChooseUs />
       <ServiceAreas />
-      <ContactCta />
+      <EstimateForm />
     </main>
   );
 }
@@ -29,7 +34,7 @@ function Hero() {
 
         <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
           <a
-            href="#contact"
+            href="#estimate-form"
             className="rounded-xl bg-black px-6 py-3 text-white transition hover:opacity-90"
           >
             Request Estimate
@@ -107,7 +112,7 @@ function WhyChooseUs() {
 
   return (
     <section className="px-6 py-20">
-      <div className="mx-auto max-w-5xl grid gap-10 md:grid-cols-2 md:items-start">
+      <div className="mx-auto grid max-w-5xl gap-10 md:grid-cols-2 md:items-start">
         <div>
           <h2 className="text-3xl font-bold md:text-4xl">
             Why Homeowners Choose Us
@@ -142,6 +147,7 @@ function ServiceAreas() {
     "Falls Church",
     "McLean",
     "Vienna",
+    "Reston",
   ];
 
   return (
@@ -167,26 +173,131 @@ function ServiceAreas() {
   );
 }
 
-function ContactCta() {
+function EstimateForm() {
+  const [form, setForm] = useState({
+    name: "",
+    phone: "",
+    email: "",
+    service_type: "",
+    zipcode: "",
+    message: "",
+  });
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [statusMessage, setStatusMessage] = useState("");
+
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setStatusMessage("");
+
+    const { error } = await supabase.from("leads").insert([
+      {
+        name: form.name,
+        phone: form.phone,
+        email: form.email,
+        service_type: form.service_type,
+        zipcode: form.zipcode,
+        message: form.message,
+        language: "en",
+      },
+    ]);
+
+    if (error) {
+      setStatusMessage("Something went wrong. Please try again.");
+      setIsSubmitting(false);
+      return;
+    }
+
+    setStatusMessage("Thanks! Your request has been submitted.");
+    setForm({
+      name: "",
+      phone: "",
+      email: "",
+      service_type: "",
+      zipcode: "",
+      message: "",
+    });
+    setIsSubmitting(false);
+  }
+
   return (
-    <section id="contact" className="px-6 py-24">
+    <section id="estimate-form" className="px-6 py-24">
       <div className="mx-auto max-w-4xl rounded-3xl bg-black px-8 py-12 text-white">
-        <h2 className="text-3xl font-bold md:text-4xl">
-          Ready to start your project?
-        </h2>
+        <h2 className="text-3xl font-bold md:text-4xl">Request an Estimate</h2>
         <p className="mt-4 max-w-2xl text-gray-300">
           Tell us about your staircase, runner, or binding needs and we’ll get
           back to you with next steps.
         </p>
 
-        <div className="mt-8">
-          <a
-            href="mailto:novarunnerbinding@gmail.com"
-            className="inline-block rounded-xl bg-white px-6 py-3 font-medium text-black transition hover:bg-gray-100"
-          >
-            Email Us
-          </a>
-        </div>
+        <form
+          onSubmit={handleSubmit}
+          className="mt-8 grid gap-4 md:grid-cols-2"
+        >
+          <input
+            type="text"
+            placeholder="Name"
+            value={form.name}
+            onChange={(e) => setForm({ ...form, name: e.target.value })}
+            className="rounded-xl border border-gray-700 bg-white/5 px-4 py-3 text-white placeholder:text-gray-400"
+            required
+          />
+
+          <input
+            type="tel"
+            placeholder="Phone"
+            value={form.phone}
+            onChange={(e) => setForm({ ...form, phone: e.target.value })}
+            className="rounded-xl border border-gray-700 bg-white/5 px-4 py-3 text-white placeholder:text-gray-400"
+          />
+
+          <input
+            type="email"
+            placeholder="Email"
+            value={form.email}
+            onChange={(e) => setForm({ ...form, email: e.target.value })}
+            className="rounded-xl border border-gray-700 bg-white/5 px-4 py-3 text-white placeholder:text-gray-400"
+          />
+
+          <input
+            type="text"
+            placeholder="ZIP Code"
+            value={form.zipcode}
+            onChange={(e) => setForm({ ...form, zipcode: e.target.value })}
+            className="rounded-xl border border-gray-700 bg-white/5 px-4 py-3 text-white placeholder:text-gray-400"
+          />
+
+          <input
+            type="text"
+            placeholder="Service Needed"
+            value={form.service_type}
+            onChange={(e) => setForm({ ...form, service_type: e.target.value })}
+            className="rounded-xl border border-gray-700 bg-white/5 px-4 py-3 text-white placeholder:text-gray-400 md:col-span-2"
+          />
+
+          <textarea
+            placeholder="Tell us about your project"
+            value={form.message}
+            onChange={(e) => setForm({ ...form, message: e.target.value })}
+            className="min-h-32 rounded-xl border border-gray-700 bg-white/5 px-4 py-3 text-white placeholder:text-gray-400 md:col-span-2"
+          />
+
+          <div className="md:col-span-2">
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="rounded-xl bg-white px-6 py-3 font-medium text-black transition hover:bg-gray-100 disabled:opacity-50"
+            >
+              {isSubmitting ? "Submitting..." : "Submit Request"}
+            </button>
+          </div>
+
+          {statusMessage ? (
+            <p className="md:col-span-2 text-sm text-gray-300">
+              {statusMessage}
+            </p>
+          ) : null}
+        </form>
       </div>
     </section>
   );
