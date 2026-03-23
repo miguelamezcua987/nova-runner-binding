@@ -190,7 +190,7 @@ function EstimateForm() {
     e.preventDefault();
     setIsSubmitting(true);
     setStatusMessage("");
-
+  
     const { error } = await supabase.from("leads").insert([
       {
         name: form.name,
@@ -202,13 +202,25 @@ function EstimateForm() {
         language: "en",
       },
     ]);
-
+  
     if (error) {
       setStatusMessage("Something went wrong. Please try again.");
       setIsSubmitting(false);
       return;
     }
-
+  
+    await fetch("/api/send-confirmation", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: form.name,
+        email: form.email,
+        serviceType: form.service_type,
+      }),
+    });
+  
     setStatusMessage("Thanks! Your request has been submitted.");
     setForm({
       name: "",
