@@ -188,8 +188,14 @@ function EstimateForm() {
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setIsSubmitting(true);
     setStatusMessage("");
+  
+    if (!form.phone.trim() && !form.email.trim()) {
+      setStatusMessage("Please provide either a phone number or an email address.");
+      return;
+    }
+  
+    setIsSubmitting(true);
   
     const { error } = await supabase.from("leads").insert([
       {
@@ -309,6 +315,10 @@ function EstimateForm() {
               {isSubmitting ? "Submitting..." : "Submit Request"}
             </button>
           </div>
+
+            <p className="md:col-span-2 text-sm text-gray-300">
+              Please provide at least one way for us to reach you: phone or email.
+            </p>
 
           {statusMessage ? (
             <p className="md:col-span-2 text-sm text-gray-300">
