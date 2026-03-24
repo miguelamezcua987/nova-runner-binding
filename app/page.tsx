@@ -221,7 +221,7 @@ function EstimateForm() {
       }),
     });
   
-    setStatusMessage("Thanks! Your request has been submitted.");
+    setStatusMessage("Thanks! We received your request and will reach out within 24 hours. If you have photos of your stairs or space, replying to our confirmation email helps us prepare your estimate faster.");
     setForm({
       name: "",
       phone: "",
@@ -246,14 +246,20 @@ function EstimateForm() {
           onSubmit={handleSubmit}
           className="mt-8 grid gap-4 md:grid-cols-2"
         >
-          <input
-            type="text"
-            placeholder="Name"
-            value={form.name}
-            onChange={(e) => setForm({ ...form, name: e.target.value })}
-            className="rounded-xl border border-gray-700 bg-white/5 px-4 py-3 text-white placeholder:text-gray-400"
+          <select
+            value={form.service_type}
+            onChange={(e) => setForm({ ...form, service_type: e.target.value })}
+            className="rounded-xl border border-gray-700 bg-black px-4 py-3 text-white md:col-span-2"
             required
-          />
+          >
+            <option value="">Select a service</option>
+            <option value="Custom stair runner">Custom stair runner</option>
+            <option value="Hallway runner">Hallway runner</option>
+            <option value="Carpet binding">Carpet binding</option>
+            <option value="Area rug resizing">Area rug resizing</option>
+            <option value="Runner repair or replacement">Runner repair or replacement</option>
+            <option value="Need help choosing">Need help choosing</option>
+          </select>
 
           <input
             type="tel"
