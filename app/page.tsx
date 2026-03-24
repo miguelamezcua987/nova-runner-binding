@@ -223,7 +223,10 @@ function EstimateForm() {
       body: JSON.stringify({
         name: form.name,
         email: form.email,
+        phone: form.phone,
         serviceType: form.service_type,
+        zipcode: form.zipcode,
+        message: form.message,
       }),
     });
   
