@@ -8,6 +8,7 @@ export default function Home() {
     <main className="min-h-screen bg-white text-gray-900">
       <Hero />
       <Services />
+      <FeaturedProjects />
       <WhyChooseUs />
       <ServiceAreas />
       <EstimateForm />
@@ -17,17 +18,25 @@ export default function Home() {
 
 function Hero() {
   return (
-    <section className="px-6 py-24 md:py-32">
-      <div className="mx-auto max-w-5xl text-center">
-        <p className="text-sm font-medium uppercase tracking-[0.2em] text-gray-500">
-          Nova Runner &amp; Binding Co.
+    <section
+      className="relative px-6 py-28 md:py-40 bg-cover bg-center"
+      style={{
+        backgroundImage: "url('/projects/hero-binding.jpg')",
+      }}
+    >
+      {/* dark overlay improves text readability */}
+      <div className="absolute inset-0 bg-black/50" />
+
+      <div className="relative mx-auto max-w-5xl text-center text-white">
+        <p className="text-sm font-medium uppercase tracking-[0.2em] text-gray-200">
+          Nova Runner & Binding Co.
         </p>
 
         <h1 className="mt-4 text-4xl font-bold tracking-tight md:text-6xl">
-          Custom Stair Runners &amp; Carpet Binding in Northern Virginia
+          Custom Stair Runners & Carpet Binding in Northern Virginia
         </h1>
 
-        <p className="mx-auto mt-6 max-w-3xl text-lg leading-8 text-gray-600">
+        <p className="mx-auto mt-6 max-w-3xl text-lg leading-8 text-gray-200">
           Locally crafted stair runners, hallway runners, and custom rug binding
           for homes across Arlington, Fairfax, Alexandria, and surrounding areas.
         </p>
@@ -35,13 +44,14 @@ function Hero() {
         <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
           <a
             href="#estimate-form"
-            className="rounded-xl bg-black px-6 py-3 text-white transition hover:opacity-90"
+            className="rounded-xl bg-white px-6 py-3 text-black font-medium transition hover:opacity-90"
           >
             Request Estimate
           </a>
+
           <a
             href="#services"
-            className="rounded-xl border border-gray-300 px-6 py-3 transition hover:bg-gray-50"
+            className="rounded-xl border border-white px-6 py-3 transition hover:bg-white hover:text-black"
           >
             Explore Services
           </a>
@@ -331,5 +341,63 @@ function EstimateForm() {
         </form>
       </div>
     </section>
+  );
+}
+
+function FeaturedProjects() {
+  return (
+    <section className="bg-gray-50 px-6 py-20">
+      <div className="mx-auto max-w-6xl">
+        <div className="max-w-2xl">
+          <h2 className="text-3xl font-bold md:text-4xl">Recent Projects</h2>
+          <p className="mt-4 text-gray-600">
+            A look at recent stair runner, hallway runner, and carpet binding
+            work across Northern Virginia.
+          </p>
+        </div>
+
+        <div className="mt-10 grid gap-6 md:grid-cols-3">
+          <ProjectCard
+            img="/projects/stair-runner-installation.png"
+            title="Custom Stair Runner"
+            location="Northern Virginia"
+          />
+          <ProjectCard
+            img="/projects/hallway-runner-installation.png"
+            title="Hallway Runner Installation"
+            location="Northern Virginia"
+          />
+          <ProjectCard
+            img="/projects/carpet-binding-installation.png"
+            title="Custom Carpet Binding"
+            location="Northern Virginia"
+          />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ProjectCard({
+  img,
+  title,
+  location,
+}: {
+  img: string;
+  title: string;
+  location: string;
+}) {
+  return (
+    <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+      <img
+        src={img}
+        alt={title}
+        className="h-72 w-full object-cover"
+      />
+      <div className="p-5">
+        <h3 className="text-xl font-semibold">{title}</h3>
+        <p className="mt-2 text-gray-600">{location}</p>
+      </div>
+    </div>
   );
 }
