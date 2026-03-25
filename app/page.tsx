@@ -2,6 +2,7 @@
 
 import { FormEvent, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -67,21 +68,25 @@ function Services() {
       title: "Custom Stair Runners",
       description:
         "Runner solutions tailored to your staircase, style, and home layout.",
+      link: "/stair-runners-northern-virginia",
     },
     {
       title: "Carpet Binding",
       description:
         "Clean, finished edges for custom rugs, runners, and hallway pieces.",
+      link: "/carpet-binding-northern-virginia",
     },
     {
       title: "Area Rug Resizing",
       description:
         "Resize and reshape existing carpet into a custom piece for your space.",
+      link: "/area-rug-resizing-northern-virginia",
     },
     {
       title: "Hallway Runners",
       description:
         "Durable, attractive hallway runners designed for fit and longevity.",
+      link: "/hallway-runners-northern-virginia",
     },
   ];
 
@@ -97,15 +102,25 @@ function Services() {
         </div>
 
         <div className="mt-10 grid gap-6 md:grid-cols-2">
-          {services.map((service) => (
-            <div
-              key={service.title}
-              className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm"
-            >
-              <h3 className="text-xl font-semibold">{service.title}</h3>
-              <p className="mt-3 text-gray-600">{service.description}</p>
-            </div>
-          ))}
+          {services.map((service) => {
+            const card = (
+              <div
+                key={service.title}
+                className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm hover:shadow-md transition"
+    >
+                <h3 className="text-xl font-semibold">{service.title}</h3>
+                <p className="mt-3 text-gray-600">{service.description}</p>
+              </div>
+            );
+            
+        return service.link ? (
+          <Link key={service.title} href={service.link}>
+            {card}
+          </Link>
+        ) : (
+          card
+        );
+      })}
         </div>
       </div>
     </section>
