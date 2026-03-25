@@ -199,14 +199,19 @@ function EstimateForm() {
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setStatusMessage("");
-  
+
+    if (!form.name.trim()) {
+      setStatusMessage("Please enter your name.");
+      return;
+    }
+
     if (!form.phone.trim() && !form.email.trim()) {
       setStatusMessage("Please provide either a phone number or an email address.");
       return;
     }
-  
+
     setIsSubmitting(true);
-  
+
     const { error } = await supabase.from("leads").insert([
       {
         name: form.name,
@@ -218,13 +223,13 @@ function EstimateForm() {
         language: "en",
       },
     ]);
-  
+
     if (error) {
       setStatusMessage("Something went wrong. Please try again.");
       setIsSubmitting(false);
       return;
     }
-  
+
     await fetch("/api/send-confirmation", {
       method: "POST",
       headers: {
@@ -239,8 +244,11 @@ function EstimateForm() {
         message: form.message,
       }),
     });
-  
-    setStatusMessage("Thanks! We received your request and will reach out within 24 hours. If you have photos of your stairs or space, replying to our confirmation email helps us prepare your estimate faster.");
+
+    setStatusMessage(
+      "Thanks! We received your request and will reach out within 24 hours. If you have photos of your stairs or space, replying to our confirmation email helps us prepare your estimate faster."
+    );
+
     setForm({
       name: "",
       phone: "",
@@ -249,6 +257,7 @@ function EstimateForm() {
       zipcode: "",
       message: "",
     });
+
     setIsSubmitting(false);
   }
 
@@ -265,6 +274,15 @@ function EstimateForm() {
           onSubmit={handleSubmit}
           className="mt-8 grid gap-4 md:grid-cols-2"
         >
+          <input
+            type="text"
+            placeholder="Name"
+            required
+            value={form.name}
+            onChange={(e) => setForm({ ...form, name: e.target.value })}
+            className="rounded-xl border border-gray-700 bg-white/5 px-4 py-3 text-white placeholder:text-gray-400 md:col-span-2"
+          />
+
           <select
             value={form.service_type}
             onChange={(e) => setForm({ ...form, service_type: e.target.value })}
@@ -301,14 +319,6 @@ function EstimateForm() {
             placeholder="ZIP Code"
             value={form.zipcode}
             onChange={(e) => setForm({ ...form, zipcode: e.target.value })}
-            className="rounded-xl border border-gray-700 bg-white/5 px-4 py-3 text-white placeholder:text-gray-400"
-          />
-
-          <input
-            type="text"
-            placeholder="Service Needed"
-            value={form.service_type}
-            onChange={(e) => setForm({ ...form, service_type: e.target.value })}
             className="rounded-xl border border-gray-700 bg-white/5 px-4 py-3 text-white placeholder:text-gray-400 md:col-span-2"
           />
 
@@ -329,9 +339,9 @@ function EstimateForm() {
             </button>
           </div>
 
-            <p className="md:col-span-2 text-sm text-gray-300">
-              Please provide at least one way for us to reach you: phone or email.
-            </p>
+          <p className="md:col-span-2 text-sm text-gray-300">
+            Please provide at least one way for us to reach you: phone or email.
+          </p>
 
           {statusMessage ? (
             <p className="md:col-span-2 text-sm text-gray-300">
